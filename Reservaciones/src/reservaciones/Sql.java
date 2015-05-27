@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package reservaciones;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,18 +8,32 @@ import java.sql.ResultSet;
 import java.sql.*; 
 
 public class Sql {
+    
+    String driver = "com.mysql.jdbc.Driver";
+    String host = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql378796";
+    String user = "sql378796";
+    String pass = "gG6!jZ8*";
+
+    String query;
+    Connection con;
+    Statement sql;
+    ResultSet ans;
+
     Sql(){
+        
+        query = "SELECT * FROM Restaurantes";
+
         try {
-            String host = "jdbc:mysql://sql3.freesqldatabase.com:3306/sql378796";
-            String uName = "sql378796";
-            String uPass = "gG6!jZ8*";
-            Connection con = DriverManager.getConnection(host, uName, uPass);
-            Statement stmt = con.createStatement( );
-            String SQL = "SELECT * FROM Restaurantes";
-            ResultSet rs = stmt.executeQuery( SQL );
+            Class.forName(driver);
+            con = DriverManager.getConnection(host, user, pass);
+            sql = con.createStatement();
+            ans = stmt.executeQuery(query);
             
-        }catch( SQLException err ) {
-            System.out.println( err.getMessage( ) );        
+        }catch( SQLException er ) {
+            System.err.println(er);        
+        }
+        catch(ClassNotFoundException a){
+            System.err.println(a);
         }
     }
 }
