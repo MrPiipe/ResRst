@@ -27,7 +27,17 @@ public class Sql {
             Class.forName(driver);
             con = DriverManager.getConnection(host, user, pass);
             sql = con.createStatement();
-            ans = stmt.executeQuery(query);
+            ans = sql.executeQuery(query);
+            
+            while (ans.next()) {
+            int codigo = ans.getInt("Codigo");
+            String nombre = ans.getString("Nombre");
+            String direccion = ans.getString("Direccion");
+            String capacidad = ans.getString("Capacidad");
+            String imagen = ans.getString("imagen");
+            
+            System.out.println(codigo + " " + nombre + " " + direccion + " " + capacidad + " " + imagen);
+            }
             
         }catch( SQLException er ) {
             System.err.println(er);        
