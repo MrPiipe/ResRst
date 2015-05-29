@@ -6,9 +6,15 @@ import java.awt.event.*;
 public class Panel extends JPanel implements ActionListener {
 
     JButton btnReservar;
+
     JLabel lblLugar;
     JLabel lblFecha;
     JLabel lblHora;
+    JLabel lblNombre;
+    JLabel lblCedula;
+
+    JTextField txtNombre;
+    JTextField txtCedula;
 
     JComboBox boxLugar;
     JComboBox boxFecha;
@@ -17,9 +23,22 @@ public class Panel extends JPanel implements ActionListener {
     Panel(){
         setLayout(null);
 
+        btnReservar = new JButton("Reservar");
+
+        lblLugar = new JLabel("Lugar");    
+        lblFecha = new JLabel("Fecha");
+        lblHora = new JLabel("Hora");
+        lblNombre = new JLabel("Nombre: ");
+        lblCedula = new JLabel("Cedula: ");
+
+        txtNombre = new JTextField();
+        txtCedula = new JTextField();
+
         boxLugar = new JComboBox();
         boxFecha = new JComboBox();
         boxHora = new JComboBox();
+
+        btnReservar.addActionListener(this);
 
         boxLugar.addActionListener(this);
         boxFecha.addActionListener(this);
@@ -29,28 +48,35 @@ public class Panel extends JPanel implements ActionListener {
         boxFecha.setActionCommand("FECHA");
         boxHora.setActionCommand("HORA");
 
-        btnReservar = new JButton("Reservar");
-        btnReservar.addActionListener(this);
-
-        lblLugar = new JLabel("Lugar");    
-        lblFecha = new JLabel("Fecha");
-        lblHora = new JLabel("Hora");
+        btnReservar.setBounds(350,110,100,20);
 
         lblLugar.setBounds(50,40,50,20);
         lblFecha.setBounds(180,40,50,20);
         lblHora.setBounds(310,40,50,20);
-        btnReservar.setBounds(350,110,100,20);
+        lblNombre.setBounds(10,10,70,20);
+        lblCedula.setBounds(240,10,70,20);
+
+        txtNombre.setBounds(80,10,150,20);
+        txtCedula.setBounds(320,10,150,20);
+
         boxLugar.setBounds(50,70,110,20);
         boxFecha.setBounds(180,70,110,20);
         boxHora.setBounds(310,70,110,20);
 
-        add(boxLugar);
-        add(boxFecha);
-        add(boxHora);
+        add(btnReservar);
+
         add(lblLugar);
         add(lblFecha);
         add(lblHora);
-        add(btnReservar);
+        add(lblNombre);
+        add(lblCedula);
+
+        add(txtNombre);
+        add(txtCedula);
+
+        add(boxLugar);
+        add(boxFecha);
+        add(boxHora);
 
         addItem(0,"Norte");
         addItem(0,"Sur");
