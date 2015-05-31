@@ -127,7 +127,7 @@ public class Panel extends JPanel implements ActionListener {
         addItem(2,"11:00 p.m.");
         addItem(2,"12:00 p.m.");
 
-//        boxFecha.setEnabled(false);
+        boxLugar.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
     }
@@ -152,6 +152,8 @@ public class Panel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent eve){
         String id = eve.getActionCommand();
         switch (id) {
+            case "RESTAURANTE":
+                boxLugar.setEnabled(true);
             case "LUGAR":
                 boxHora.setEnabled(true);
                 //if(segundo) boxFecha.setEnabled(true);
@@ -162,7 +164,6 @@ public class Panel extends JPanel implements ActionListener {
                 break;
             case "RESERVAR":
                 int cedula = Integer.parseInt(txtCedula.getText());
-                String time =  boxHora.getSelectedItem().toString();
                 String lugar = boxLugar.getSelectedItem().toString();
                 String hora = boxHora.getSelectedItem().toString();
                 String restaurante =boxRestaurante.getSelectedItem().toString();
