@@ -8,7 +8,7 @@ public class Frame extends JFrame {
 
     Frame(){
         super("Reservaciones");
-        setSize(500,200);
+        setSize(600,200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         panel = new Panel();
