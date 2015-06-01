@@ -171,11 +171,11 @@ public class Panel extends JPanel implements ActionListener {
                 SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
                 String date = formato.format(calendario.getDate());
                 java.sql.Date fecha = java.sql.Date.valueOf(date);
+                database.executeQuery(cedula, hora, fecha, lugar, restaurante, nombre);
                 JOptionPane.showMessageDialog(null, txtNombre.getText()
                         + " su reserva se ha realizado"
                         + " correctamente\n para el día: " + fecha
                         + "\n a la(s): " + hora);
-                database.executeQuery(cedula, hora, fecha, lugar, restaurante, nombre);
                 break;
         }
     }

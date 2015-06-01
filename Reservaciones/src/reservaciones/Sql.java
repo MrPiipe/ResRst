@@ -34,6 +34,7 @@ public class Sql {
             System.err.println(er);        
         }
     }
+    
     void readingQuery(Panel panel){
         try{
             rs = sql.executeQuery("SELECT Nombre FROM Restaurantes");
@@ -50,6 +51,7 @@ public class Sql {
     
     void executeQuery(int cedula, String hora, java.sql.Date fecha, 
             String lugar, String restaurante, String nombre){
+        System.out.println("fgfgghghgfgfjg");
         query="INSERT INTO `Reservas` (Hora, Fecha, Lugar, Restaurante, "
                 + "Cliente) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
@@ -60,6 +62,8 @@ public class Sql {
             ans.setString(3, lugar);
             ans.setString(4, restaurante);
             ans.setInt(5, cedula);
+            System.out.println("ehhhhhhhhh");
+            ans.executeUpdate();
             ans = con.prepareStatement(querycliente);
             ans.setInt(1, cedula);
             ans.setString(2, nombre);
