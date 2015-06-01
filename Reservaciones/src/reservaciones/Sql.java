@@ -54,7 +54,9 @@ public class Sql {
 //            }
             
         } catch (SQLException ex) {
-            Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
+
+            JOptionPane.showMessageDialog(null, "Por favor ingrese su nombre y cedula");
         }
         
     }
