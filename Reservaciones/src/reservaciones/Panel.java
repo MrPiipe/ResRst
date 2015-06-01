@@ -65,23 +65,23 @@ public class Panel extends JPanel implements ActionListener {
         boxHora.setActionCommand("HORA");
         btnReservar.setActionCommand("RESERVAR");
 
-        btnReservar.setBounds(350,110,100,20);
+        btnReservar.setBounds(480,110,100,20);
 
         lblRestaurante.setBounds(50,40,100,20);
         lblLugar.setBounds(180,40,50,20);
         lblFecha.setBounds(310,40,50,20);
-        lblHora.setBounds(440,40,50,20);
+        lblHora.setBounds(470,40,50,20);
         lblNombre.setBounds(10,10,70,20);
         lblCedula.setBounds(260,10,70,20);
 
-        txtNombre.setBounds(80,10,150,30);
-        txtCedula.setBounds(320,10,150,30);
+        txtNombre.setBounds(80,10,150,25);
+        txtCedula.setBounds(320,10,150,25);
 
         boxRestaurante.setBounds(50, 70, 110, 20);
         boxLugar.setBounds(180,70,110,20);
         //boxFecha.setBounds(180,70,110,20);
-        calendario.setBounds(310,70,110,30);
-        boxHora.setBounds(440,70,110,20);
+        calendario.setBounds(310,70,150,25);
+        boxHora.setBounds(470,70,110,20);
 
         add(btnReservar);
 
@@ -100,16 +100,12 @@ public class Panel extends JPanel implements ActionListener {
         add(calendario);
         add(boxHora);
         
-        database.readingQuery();
+        database.readingQuery(this);
 
         addItem(0,"Norte");
         addItem(0,"Sur");
         addItem(0,"Este");
         addItem(0,"Oeste");
-        addItem(1,"Frisby");
-        addItem(1,"Rancherito");
-        addItem(1,"Dogger");
-        addItem(1,"Subway");
         addItem(2,"8:00 a.m.");
         addItem(2,"9:00 a.m.");
         addItem(2,"10:00 a.m.");
@@ -129,6 +125,7 @@ public class Panel extends JPanel implements ActionListener {
         addItem(2,"12:00 p.m.");
 
         boxLugar.setEnabled(false);
+        calendario.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
     }
@@ -155,8 +152,10 @@ public class Panel extends JPanel implements ActionListener {
         switch (id) {
             case "RESTAURANTE":
                 boxLugar.setEnabled(true);
+                break;
             case "LUGAR":
                 boxHora.setEnabled(true);
+                calendario.setEnabled(true);
                 //if(segundo) boxFecha.setEnabled(true);
                 //else segundo = true;
                 break;

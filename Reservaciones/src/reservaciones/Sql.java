@@ -1,7 +1,6 @@
 package reservaciones;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,10 +24,8 @@ public class Sql {
     Statement sql;
     PreparedStatement ans;
     ResultSet rs;
-    Panel panel;
 
     Sql(){
-        panel = new Panel();
         try {
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
@@ -37,12 +34,12 @@ public class Sql {
             System.err.println(er);        
         }
     }
-    void readingQuery(){
+    void readingQuery(Panel panel){
         try{
             rs = sql.executeQuery("SELECT Nombre FROM Restaurantes");
             while (rs.next()){
                 String nombreRest = rs.getString("Nombre");
-                panel.addItem(0,nombreRest);
+                panel.addItem(1,nombreRest);
             }
             
         } catch (SQLException ex) {
