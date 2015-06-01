@@ -19,6 +19,7 @@ public class Sql {
     String pass = "gG6!jZ8*";
 
     String query;
+    String queryce;
     Connection con;
     Statement sql;
     PreparedStatement ans;
@@ -35,9 +36,10 @@ public class Sql {
     
     
     void executeQuery(int cedula, String hora, java.sql.Date fecha, 
-            String lugar, String restaurante){
+            String lugar, String restaurante, String nombre){
         query="INSERT INTO `Reservas` (Hora, Fecha, Lugar, Restaurante, "
                 + "Cliente) VALUES (?,?,?,?,?)";
+        queryce="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
         try {
             ans = con.prepareStatement(query);
             ans.setString(1, hora);
@@ -45,6 +47,9 @@ public class Sql {
             ans.setString(3, lugar);
             ans.setString(4, restaurante);
             ans.setInt(5, cedula);
+            ans = con.prepareStatement(queryce);
+            ans.setInt(1, cedula);
+            ans.setString(2, nombre);
             ans.executeUpdate();
 //            
 //            while (ans.next()) {
