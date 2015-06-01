@@ -42,6 +42,16 @@ public class Sql {
                 String nombreRest = rs.getString("Nombre");
                 panel.addItem(1,nombreRest);
             }
+//            rs = sql.executeQuery("SELECT Mesa FROM Capacidad");
+//            while (rs.next()){
+//                String mesa = rs.getString("Mesa");
+//                panel.addItem(0,mesa);
+//            }
+//            rs = sql.executeQuery("SELECT Hora FROM Restaurantes");
+//            while (rs.next()){
+//                String hora = rs.getString("Hora");
+//                panel.addItem(0,hora);
+//            }
             
         } catch (SQLException ex) {
             Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
@@ -62,7 +72,6 @@ public class Sql {
             ans.setString(3, lugar);
             ans.setString(4, restaurante);
             ans.setInt(5, cedula);
-            System.out.println("ehhhhhhhhh");
             ans.executeUpdate();
             ans = con.prepareStatement(querycliente);
             ans.setInt(1, cedula);
