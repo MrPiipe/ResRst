@@ -22,7 +22,7 @@ public class Frame extends JFrame {
                     log(java.util.logging.Level.SEVERE, null, e);
         }
         
-        setSize(600,150);
+        setSize(600,200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         panel = new Panel();
