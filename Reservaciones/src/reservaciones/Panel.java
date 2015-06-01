@@ -75,13 +75,13 @@ public class Panel extends JPanel implements ActionListener {
         lblNombre.setBounds(10,10,70,20);
         lblCedula.setBounds(260,10,70,20);
 
-        txtNombre.setBounds(80,10,150,20);
-        txtCedula.setBounds(320,10,150,20);
+        txtNombre.setBounds(80,10,150,30);
+        txtCedula.setBounds(320,10,150,30);
 
         boxRestaurante.setBounds(50, 70, 110, 20);
         boxLugar.setBounds(180,70,110,20);
         //boxFecha.setBounds(180,70,110,20);
-        calendario.setBounds(310,70,110,20);
+        calendario.setBounds(310,70,110,30);
         boxHora.setBounds(440,70,110,20);
 
         add(btnReservar);
