@@ -19,12 +19,16 @@ public class Sql {
     String pass = "gG6!jZ8*";
 
     String query;
-    String queryce;
+    String querycliente;
+    String queryread;
     Connection con;
     Statement sql;
     PreparedStatement ans;
+    ResultSet rs;
+    Panel panel;
 
     Sql(){
+        panel = new Panel();
         try {
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
@@ -33,13 +37,25 @@ public class Sql {
             System.err.println(er);        
         }
     }
-    
+    void readingQuery(){
+        try{
+            rs = sql.executeQuery("SELECT Nombre FROM Restaurantes");
+            while (rs.next()){
+                String nombreRest = rs.getString("Nombre");
+                panel.addItem(0,nombreRest);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
     void executeQuery(int cedula, String hora, java.sql.Date fecha, 
             String lugar, String restaurante, String nombre){
         query="INSERT INTO `Reservas` (Hora, Fecha, Lugar, Restaurante, "
                 + "Cliente) VALUES (?,?,?,?,?)";
-        queryce="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
+        querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
         try {
             ans = con.prepareStatement(query);
             ans.setString(1, hora);
@@ -47,20 +63,10 @@ public class Sql {
             ans.setString(3, lugar);
             ans.setString(4, restaurante);
             ans.setInt(5, cedula);
-            ans = con.prepareStatement(queryce);
+            ans = con.prepareStatement(querycliente);
             ans.setInt(1, cedula);
             ans.setString(2, nombre);
             ans.executeUpdate();
-//            
-//            while (ans.next()) {
-//                int codigo = ans.getInt("Codigo");
-//                String nombre = ans.getString("Nombre");
-//                String direccion = ans.getString("Direccion");
-//                String capacidad = ans.getString("Capacidad");
-//                String imagen = ans.getString("imagen");
-//                
-//                System.out.println(codigo + " " + nombre + " " + direccion + " " + capacidad + " " + imagen);
-//            }
         } catch (SQLException ex) {
             Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
         }

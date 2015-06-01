@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 public class Panel extends JPanel implements ActionListener {
-
+    
     JButton btnReservar;
 
     JLabel lblRestaurante;
@@ -31,7 +31,6 @@ public class Panel extends JPanel implements ActionListener {
 
     Panel(){
         setLayout(null);
-        
         database= new Sql();
         
         btnReservar = new JButton("Reservar");
@@ -100,6 +99,8 @@ public class Panel extends JPanel implements ActionListener {
         add(boxLugar);
         add(calendario);
         add(boxHora);
+        
+        database.readingQuery();
 
         addItem(0,"Norte");
         addItem(0,"Sur");
@@ -132,7 +133,7 @@ public class Panel extends JPanel implements ActionListener {
         btnReservar.setEnabled(false);
     }
 
-    private void addItem(int pos, String string){ //0 -> Lugar, 1 -> Fecha, 2 -> Hora
+    public void addItem(int pos, String string){ //0 -> Lugar, 1 -> Fecha, 2 -> Hora
         switch(pos){
             case 0:
                 boxLugar.addItem(string);
