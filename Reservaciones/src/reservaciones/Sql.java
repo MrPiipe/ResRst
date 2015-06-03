@@ -78,10 +78,30 @@ public class Sql implements ActionListener{
                         + "\n a la(s): " + hora);
                 break;
         }
-    }
+    } 
 
     
-    void readTime(int IDrest, Panel panel){
+    public void calcular(Time t1, Time t2) {
+        Calendar cal = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+
+        cal.setTimeInMillis(t1.getTime());
+        cal2.setTimeInMillis(t2.getTime());
+
+        do {
+            panel.addItem(2, getFormatCal(cal));
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+        }
+        while (cal.before(cal2));
+    }
+  
+   public String getFormatCal(Calendar cal) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        String formatted = format.format(cal.getTime());
+        return formatted;
+    }
+    
+    public  void readTime(int IDrest, Panel panel){
         Time horaI;
         Time horaF;
         try{
@@ -94,13 +114,12 @@ public class Sql implements ActionListener{
                 horaF = rs.getTime("`Hora Fin`");
             }
         }catch (SQLException ex) {
-            //Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
-            //panel.error("Por favor ingrese su nombre y cedula");
+            panel.error("error en la lectura del tiempo");
         }
         //calcular(horaI,horaF, panel);
     }
     
-    void readingQuery(){
+    public void readingQuery(){
         try{
             rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
             while (rs.next()){
