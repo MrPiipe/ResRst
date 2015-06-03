@@ -151,6 +151,7 @@ public class Panel extends JPanel implements ActionListener {
         String id = eve.getActionCommand();
         switch (id) {
             case "RESTAURANTE":
+                boxLugar.removeAllItems();
                 boxLugar.setEnabled(true);
                 break;
             case "LUGAR":

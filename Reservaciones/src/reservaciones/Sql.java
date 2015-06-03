@@ -13,10 +13,9 @@ public class Sql {
     
     String driver = "com.mysql.jdbc.Driver";
     String host = "jdbc:mysql://sql3.freesqldatabase.com:3306/";
-    String database = "sql378796";
-    String user = "sql378796";
-    String pass = "gG6!jZ8*";
-
+    String database = "sql379612";
+    String user = "sql379612";
+    String pass = "vJ5!tG2*";
     String query;
     String querycliente;
     String queryread;
