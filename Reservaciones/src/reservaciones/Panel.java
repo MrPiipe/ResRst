@@ -4,7 +4,11 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.Date;
+import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Panel extends JPanel implements ActionListener {
     
@@ -106,24 +110,22 @@ public class Panel extends JPanel implements ActionListener {
         addItem(0,"Sur");
         addItem(0,"Este");
         addItem(0,"Oeste");
-        addItem(2,"8:00 a.m.");
-        addItem(2,"9:00 a.m.");
-        addItem(2,"10:00 a.m.");
-        addItem(2,"11:00 a.m.");
-        addItem(2,"12:00 p.m.");
-        addItem(2,"1:00 p.m.");
-        addItem(2,"2:00 p.m.");
-        addItem(2,"3:00 p.m.");
-        addItem(2,"4:00 p.m.");
-        addItem(2,"5:00 p.m.");
-        addItem(2,"6:00 p.m.");
-        addItem(2,"7:00 p.m.");
-        addItem(2,"8:00 p.m.");
-        addItem(2,"9:00 p.m.");
-        addItem(2,"10:00 p.m.");
-        addItem(2,"11:00 p.m.");
-        addItem(2,"12:00 p.m.");
-
+        addItem(2,"8:00");
+        addItem(2,"9:00");
+        addItem(2,"10:00");
+        addItem(2,"11:00");
+        addItem(2,"12:00");
+        addItem(2,"13:00");
+        addItem(2,"14:00");
+        addItem(2,"15:00");
+        addItem(2,"16:00");
+        addItem(2,"17:00");
+        addItem(2,"18:00");
+        addItem(2,"19:00");
+        addItem(2,"20:00");
+        addItem(2,"21:00");
+        addItem(2,"22:00");
+        
         boxLugar.setEnabled(false);
         calendario.setEnabled(false);
         boxHora.setEnabled(false);
@@ -167,12 +169,20 @@ public class Panel extends JPanel implements ActionListener {
                 int cedula = Integer.parseInt(txtCedula.getText());
                 String lugar = boxLugar.getSelectedItem().toString();
                 String hora = boxHora.getSelectedItem().toString();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                long ms = 0;
+                try {
+                    ms = sdf.parse(hora).getTime();
+                } catch (ParseException ex) {
+                    Logger.getLogger(Panel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Time t = new Time(ms);
                 String restaurante =boxRestaurante.getSelectedItem().toString();
                 String nombre = txtNombre.getText();
                 SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
                 String date = formato.format(calendario.getDate());
                 java.sql.Date fecha = java.sql.Date.valueOf(date);
-                database.executeQuery(cedula, hora, fecha, lugar, restaurante, nombre);
+                database.executeQuery(cedula, t, fecha, lugar, restaurante, nombre);
                 error(txtNombre.getText() + " su reserva se ha realizado"
                         + " correctamente\n para el día: " + fecha
                         + "\n a la(s): " + hora);

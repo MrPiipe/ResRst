@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +61,7 @@ public class Sql {
         
     }
     
-    void executeQuery(int cedula, String hora, java.sql.Date fecha, 
+    void executeQuery(int cedula, Time hora, java.sql.Date fecha, 
             String mesa, String restaurante, String nombre){
         query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
@@ -76,7 +77,7 @@ public class Sql {
             ans.setInt(1, cedula); 
             ans.setInt(2, IDRestaurante);
             ans.setDate(3, fecha);
-            ans.setString(4, hora); //Cambiar a formato time
+            ans.setTime(4, hora); //Cambiar a formato time
             ans.setString(5, mesa);
             ans.executeUpdate();
             ans = con.prepareStatement(querycliente);
