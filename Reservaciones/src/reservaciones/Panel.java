@@ -1,16 +1,11 @@
 package reservaciones;
 
-import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
-import java.awt.event.*;
-import java.sql.Date;
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.ParseException;
+import com.toedter.calendar.JDateChooser;
 
-public class Panel extends JPanel implements ActionListener {
+public class Panel extends JPanel {
     
     JButton btnReservar;
 
@@ -30,11 +25,8 @@ public class Panel extends JPanel implements ActionListener {
     
     JDateChooser calendario;
     
-    Sql database;
-
     Panel(){
         setLayout(null);
-        database= new Sql();
         
         btnReservar = new JButton("Reservar");
 
@@ -54,11 +46,13 @@ public class Panel extends JPanel implements ActionListener {
         
         calendario = new JDateChooser();
         
-        btnReservar.addActionListener(this);
+        Sql database = new Sql(this);
 
-        boxRestaurante.addActionListener(this);
-        boxLugar.addActionListener(this);
-        boxHora.addActionListener(this);
+        btnReservar.addActionListener(database);
+
+        boxRestaurante.addActionListener(database);
+        boxLugar.addActionListener(database);
+        boxHora.addActionListener(database);
 
         boxRestaurante.setActionCommand("RESTAURANTE");
         boxLugar.setActionCommand("LUGAR");
@@ -99,12 +93,52 @@ public class Panel extends JPanel implements ActionListener {
         add(calendario);
         add(boxHora);
         
-        database.readingQuery(this);
-
         boxLugar.setEnabled(false);
-        //calendario.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
+    }
+
+    public long getDateMillis(String hora){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+        long ms = 0;
+
+        try {
+            ms = sdf.parse(hora).getTime();
+        } catch (ParseException ex) {
+            error("error al combertir la hora");
+        }
+
+        return ms;
+    }
+
+    public String getDateFormat(){
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        return formato.format(calendario.getDate());
+    }
+
+    public JComboBox getComboBox(int pos){
+        switch(pos){
+            case 0:
+                return boxLugar;
+            case 1:
+                return boxRestaurante;
+            case 2: 
+                return boxHora;
+        }
+        return null;
+    } 
+
+    public String getText(int pos){
+        switch(pos){
+            case 0:
+                return txtNombre.getText();
+            case 1:
+                return txtCedula.getText();
+            case 2: 
+
+        }
+        return null;
     }
 
     public void addItem(int pos, String string){ //0 -> Lugar, 1 -> Fecha, 2 -> Hora
@@ -121,51 +155,39 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
-    //boolean segundo = false;
-
-    @Override
-    public void actionPerformed(ActionEvent eve){
-        String id = eve.getActionCommand();
-        switch (id) {
-            case "RESTAURANTE":
+    public void cleanComboBox(int pos){ //0 -> Lugar, 1 -> Fecha, 2 -> Hora
+        switch(pos){
+            case 0:
                 boxLugar.removeAllItems();
-                boxHora.setEnabled(true);
                 break;
-            case "HORA":
-                boxLugar.setEnabled(true);
-                btnReservar.setEnabled(true);
+            case 1:
+                boxRestaurante.removeAllItems();
                 break;
-            case "LUGAR":
-                //calendario.setEnabled(true);
-                //if(segundo) boxFecha.setEnabled(true);
-                //else segundo = true;
+            case 2:
+                boxHora.removeAllItems();
                 break;
-            case "RESERVAR":
-                int cedula = Integer.parseInt(txtCedula.getText());
-                String lugar = boxLugar.getSelectedItem().toString();
-                String hora = boxHora.getSelectedItem().toString();
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                long ms = 0;
-                try {
-                    ms = sdf.parse(hora).getTime();
-                } catch (ParseException ex) {
-                    Logger.getLogger(Panel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Time t = new Time(ms);
-                String restaurante =boxRestaurante.getSelectedItem().toString();
-                String nombre = txtNombre.getText();
-                SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-                String date = formato.format(calendario.getDate());
-                java.sql.Date fecha = java.sql.Date.valueOf(date);
-                database.executeQuery(cedula, t, fecha, lugar, restaurante, nombre);
-                error(txtNombre.getText() + " su reserva se ha realizado"
-                        + " correctamente\n para el día: " + fecha
-                        + "\n a la(s): " + hora);
+        }
+    }
+
+    public void enebleDisable(int pos, boolean enable){ //0 -> Lugar, 1 -> Boton, 2 -> Hora
+        switch(pos){
+            case 0:
+                boxLugar.setEnabled(enable);
+                break;
+            case 1:
+                btnReservar.setEnabled(enable);
+                break;
+            case 2:
+                boxHora.setEnabled(enable);
                 break;
         }
     }
 
     public void error(String error){
        JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void msg(String mensaje){
+       JOptionPane.showMessageDialog(null, mensaje);
     }
 }

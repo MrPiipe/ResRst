@@ -1,5 +1,7 @@
 package reservaciones;
 
+import java.awt.event.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +12,7 @@ import java.sql.Time;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Sql {
+public class Sql implements ActionListener{
     
     String driver = "com.mysql.jdbc.Driver";
     String host = "jdbc:mysql://sql3.freesqldatabase.com:3306/";
@@ -24,16 +26,60 @@ public class Sql {
     Statement sql;
     PreparedStatement ans;
     ResultSet rs;
+    Panel panel;
 
-    Sql(){
+    Sql(Panel panel){
         try {
+            this.panel = panel;
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
             sql = con.createStatement();        
+            readingQuery();
         }catch( SQLException | ClassNotFoundException er ) {
             System.err.println(er);        
         }
     }
+
+    public void actionPerformed(ActionEvent eve){
+        String id = eve.getActionCommand();
+        switch (id) {
+            case "RESTAURANTE":
+                panel.cleanComboBox(0);
+                panel.enebleDisable(2,true);
+                break;
+            case "HORA":
+                panel.enebleDisable(0,true);
+                break;
+            case "LUGAR":
+                //calendario.setEnabled(true);
+                //if(segundo) boxFecha.setEnabled(true);
+                //else segundo = true;
+                break;
+            case "RESERVAR":
+                String nombre = panel.getText(0);
+                String cedula = panel.getText(1);
+                int ced = Integer.parseInt(cedula);
+
+                String lugar = panel.getComboBox(0).getSelectedItem().toString();
+                String restaurante = panel.getComboBox(1).getSelectedItem().toString();
+                String hora = panel.getComboBox(2).getSelectedItem().toString();
+
+                long time = panel.getDateMillis(hora);
+                String date =  panel.getDateFormat();
+
+                Time t = new Time(time);
+                
+                java.sql.Date fecha = java.sql.Date.valueOf(date);
+
+                executeQuery(ced, t, fecha, lugar, restaurante, nombre);
+
+                panel.msg(nombre + " su reserva se ha realizado"
+                        + " correctamente\n para el día: " + fecha
+                        + "\n a la(s): " + hora);
+                break;
+        }
+    }
+
     
     void readTime(int IDrest, Panel panel){
         Time horaI;
@@ -51,10 +97,10 @@ public class Sql {
             //Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
             //panel.error("Por favor ingrese su nombre y cedula");
         }
-        calcular(horaI,horaF, panel);
+        //calcular(horaI,horaF, panel);
     }
     
-    void readingQuery(Panel panel){
+    void readingQuery(){
         try{
             rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
             while (rs.next()){
@@ -73,8 +119,6 @@ public class Sql {
 //            }
             
         } catch (SQLException ex) {
-            //Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
-
             panel.error("Por favor ingrese su nombre y cedula");
         }
         
