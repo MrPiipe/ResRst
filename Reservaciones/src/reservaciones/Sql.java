@@ -35,6 +35,25 @@ public class Sql {
         }
     }
     
+    void readTime(int IDrest, Panel panel){
+        Time horaI;
+        Time horaF;
+        try{
+            rs = sql.executeQuery("SELECT `Hora Inicio` FROM Restaurantes WHERE IDRestaurante =" + "'"+ IDrest+"'");
+            if(rs.next()){
+                horaI = rs.getTime("`Hora Inicio`");
+            }
+            rs = sql.executeQuery("SELECT `Hora Fin` FROM Restaurantes WHERE IDRestaurante =" + "'"+ IDrest+"'");
+            if(rs.next()){
+                horaF = rs.getTime("`Hora Fin`");
+            }
+        }catch (SQLException ex) {
+            //Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
+            //panel.error("Por favor ingrese su nombre y cedula");
+        }
+        calcular(horaI,horaF, panel);
+    }
+    
     void readingQuery(Panel panel){
         try{
             rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
