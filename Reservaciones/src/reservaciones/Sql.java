@@ -37,9 +37,9 @@ public class Sql {
     
     void readingQuery(Panel panel){
         try{
-            rs = sql.executeQuery("SELECT Nombre FROM Restaurantes");
+            rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
             while (rs.next()){
-                String nombreRest = rs.getString("Nombre");
+                String nombreRest = rs.getString("Nombre Restaurante");
                 panel.addItem(1,nombreRest);
             }
 //            rs = sql.executeQuery("SELECT Mesa FROM Capacidad");
@@ -62,18 +62,23 @@ public class Sql {
     }
     
     void executeQuery(int cedula, String hora, java.sql.Date fecha, 
-            String lugar, String restaurante, String nombre){
-        System.out.println("fgfgghghgfgfjg");
-        query="INSERT INTO `Reservas` (Hora, Fecha, Lugar, Restaurante, "
-                + "Cliente) VALUES (?,?,?,?,?)";
+            String mesa, String restaurante, String nombre){
+        query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
+        int IDRestaurante=0;
         try {
+            rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+restaurante+"'");
+            if(rs.next()){
+                IDRestaurante = rs.getInt("IDRestaurante");
+            }else{
+                System.out.println("Error");
+            }
             ans = con.prepareStatement(query);
-            ans.setString(1, hora);
-            ans.setDate(2, fecha);
-            ans.setString(3, lugar);
-            ans.setString(4, restaurante);
-            ans.setInt(5, cedula);
+            ans.setInt(1, cedula); 
+            ans.setInt(2, IDRestaurante);
+            ans.setDate(3, fecha);
+            ans.setString(4, hora); //Cambiar a formato time
+            ans.setString(5, mesa);
             ans.executeUpdate();
             ans = con.prepareStatement(querycliente);
             ans.setInt(1, cedula);

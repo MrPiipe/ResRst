@@ -180,6 +180,6 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     public void error(String error){
-        JOptionPane.showMessageDialog(null, error, JOptionPane.ERROR_MESSAGE);
+       //JOptionPane.showMessageDialog(null, error, JOptionPane.ERROR_MESSAGE);
     }
 }
