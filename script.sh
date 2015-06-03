@@ -6,7 +6,9 @@ run2(){
     program=$1
     cd ..
     javac reservaciones/$1
-    java reservaciones.${program/.java/""}
-    cd reservaciones
-    rm reservaciones/*.class    
+    if [ $? -eq 0 ]; then 
+        java reservaciones.${program/.java/""}
+        cd reservaciones
+    fi 
+    rm -f *.class   
 }
