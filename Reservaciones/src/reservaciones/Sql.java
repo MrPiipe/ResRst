@@ -44,6 +44,18 @@ public class Sql implements ActionListener{
             case "RESTAURANTE":
                 panel.cleanComboBox(0);
                 panel.enebleDisable(2,true);
+                String rest = panel.getComboBox(1).getSelectedItem().toString();
+
+                int IDRestaurante=0;
+
+                try{
+                    rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+rest+"'");
+                    if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
+                }catch(SQLException a){
+                    panel.error("Error al obtener el id del restaurante");
+                }
+
+                readTime(IDRestaurante);
                 break;
             case "HORA":
                 panel.enebleDisable(0,true);
@@ -78,7 +90,7 @@ public class Sql implements ActionListener{
         }
     } 
     
-    public  void readTime(int IDrest, Panel panel){
+    public  void readTime(int IDrest){
         Time horaI = null;
         Time horaF = null;
         try{
@@ -127,11 +139,10 @@ public class Sql implements ActionListener{
         int IDRestaurante=0;
         try {
             rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+restaurante+"'");
-            if(rs.next()){
-                IDRestaurante = rs.getInt("IDRestaurante");
-            }else{
-                System.out.println("Error");
-            }
+
+            if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
+            else panel.error("Error al obtener el id del restaurante");
+
             ans = con.prepareStatement(query);
             ans.setInt(1, cedula); 
             ans.setInt(2, IDRestaurante);
