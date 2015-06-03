@@ -3,6 +3,7 @@ package reservaciones;
 import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import com.toedter.calendar.JDateChooser;
 
 public class Panel extends JPanel {
@@ -96,6 +97,26 @@ public class Panel extends JPanel {
         boxLugar.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
+    }
+
+    public void calcular(long t1, long t2) {
+        Calendar cal = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+
+        cal.setTimeInMillis(t1);
+        cal2.setTimeInMillis(t2);
+
+        do {
+            addItem(2, getFormatCal(cal));
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+        }
+        while (cal.before(cal2));
+    }
+  
+   public String getFormatCal(Calendar cal) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        String formatted = format.format(cal.getTime());
+        return formatted;
     }
 
     public long getDateMillis(String hora){

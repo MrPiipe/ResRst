@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Time;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Sql implements ActionListener{
     
@@ -79,31 +77,10 @@ public class Sql implements ActionListener{
                 break;
         }
     } 
-
-    
-    public void calcular(Time t1, Time t2) {
-        Calendar cal = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-
-        cal.setTimeInMillis(t1.getTime());
-        cal2.setTimeInMillis(t2.getTime());
-
-        do {
-            panel.addItem(2, getFormatCal(cal));
-            cal.add(Calendar.HOUR_OF_DAY, 1);
-        }
-        while (cal.before(cal2));
-    }
-  
-   public String getFormatCal(Calendar cal) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        String formatted = format.format(cal.getTime());
-        return formatted;
-    }
     
     public  void readTime(int IDrest, Panel panel){
-        Time horaI;
-        Time horaF;
+        Time horaI = null;
+        Time horaF = null;
         try{
             rs = sql.executeQuery("SELECT `Hora Inicio` FROM Restaurantes WHERE IDRestaurante =" + "'"+ IDrest+"'");
             if(rs.next()){
@@ -116,7 +93,7 @@ public class Sql implements ActionListener{
         }catch (SQLException ex) {
             panel.error("error en la lectura del tiempo");
         }
-        //calcular(horaI,horaF, panel);
+        panel.calcular(horaI.getTime(), horaF.getTime());
     }
     
     public void readingQuery(){
@@ -167,7 +144,7 @@ public class Sql implements ActionListener{
             ans.setString(2, nombre);
             ans.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, ex);
+            panel.error("Error al insertar la reserva");
         }
     }
 }
