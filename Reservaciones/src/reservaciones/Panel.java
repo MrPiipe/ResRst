@@ -111,26 +111,13 @@ public class Panel extends JPanel {
             cal.add(Calendar.HOUR_OF_DAY, 1);
         }
         while (cal.before(cal2));
+           
     }
   
    public String getFormatCal(Calendar cal) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         String formatted = format.format(cal.getTime());
         return formatted;
-    }
-
-    public long getDateMillis(String hora){
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
-        long ms = 0;
-
-        try {
-            ms = sdf.parse(hora).getTime();
-        } catch (ParseException ex) {
-            error("error al combertir la hora");
-        }
-
-        return ms;
     }
 
     public String getDateFormat(){
@@ -190,7 +177,7 @@ public class Panel extends JPanel {
         }
     }
 
-    public void enebleDisable(int pos, boolean enable){ //0 -> Lugar, 1 -> Boton, 2 -> Hora
+    public void enableDisable(int pos, boolean enable){ //0 -> Lugar, 1 -> Boton, 2 -> Hora
         switch(pos){
             case 0:
                 boxLugar.setEnabled(enable);
