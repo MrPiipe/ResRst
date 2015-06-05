@@ -1,7 +1,6 @@
 package reservaciones;
 
 import java.awt.event.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,6 +24,7 @@ public class Sql implements ActionListener{
     PreparedStatement ans;
     ResultSet rs;
     Panel panel;
+    int IDRestaurante=0;
 
     Sql(Panel panel){
         try {
@@ -41,25 +41,22 @@ public class Sql implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent eve){
         String id = eve.getActionCommand();
-        int IDRestaurante=0;
         switch (id) {
             case "RESTAURANTE":
-                panel.cleanComboBox(0);
-                panel.cleanComboBox(2);              
-                String rest = panel.getComboBox(1).getSelectedItem().toString();
-
-                try{
-                    rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+rest+"'");
-                    if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
-                }catch(SQLException a){
-                    panel.error("Error al obtener el id del restaurante");
-                }
-
+                panel.cleanComboBox(2);
+                panel.cleanComboBox(0); 
+                getIDRestaurante();
                 readTime(IDRestaurante);
-                getMesas(IDRestaurante);
+                panel.enableDisable(0,false);
                 panel.enableDisable(2,true);
                 break;
             case "HORA":
+                panel.cleanComboBox(0);
+                getIDRestaurante();
+                readTime(IDRestaurante);
+                String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
+                java.sql.Time ti = java.sql.Time.valueOf(horaMesa+":00"); 
+                getMesas(IDRestaurante, ti);
                 panel.enableDisable(0,true);
                 break;
             case "LUGAR":
@@ -92,6 +89,17 @@ public class Sql implements ActionListener{
         }
     } 
     
+    public int getIDRestaurante(){
+        String rest = panel.getComboBox(1).getSelectedItem().toString();
+        try{
+            rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+rest+"'");
+            if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
+        }catch(SQLException a){
+            panel.error("Error al obtener el id del restaurante");
+        }
+        return IDRestaurante;
+    }
+    
     public  void readTime(int IDrest){
         Time horaI = null;
         Time horaF = null;
@@ -117,37 +125,22 @@ public class Sql implements ActionListener{
             while (rs.next()){
                 String nombreRest = rs.getString("Nombre Restaurante");
                 panel.addItem(1,nombreRest);
-            }
-//            rs = sql.executeQuery("SELECT Mesa FROM Capacidad");
-//            while (rs.next()){
-//                String mesa = rs.getString("Mesa");
-//                panel.addItem(0,mesa);
-//            }
-//            rs = sql.executeQuery("SELECT Hora FROM Restaurantes");
-//            while (rs.next()){
-//                String hora = rs.getString("Hora");
-//                panel.addItem(0,hora);
-//            }
-            
+            }           
         } catch (SQLException ex) {
             panel.error("Por favor ingrese su nombre y cedula");
         }
         
     }
     
-    public void getMesas(int IDrestaurante){
+    public void getMesas(int IDrestaurante, java.sql.Time ti){
         try {
-            rs = sql.executeQuery("SELECT Mesa FROM Sitio WHERE IDRestaurante= "
-                    + "'"+IDrestaurante+"'" 
-                    + " and (Mesa) Not in (SELECT Sitio.Mesa FROM Sitio"
-                    + " INNER JOIN Reservas ON"
-                    + " Reservas.IDRestaurante = Sitio.IDRestaurante" 
-                    + " WHERE Sitio.Mesa = Reservas.Mesa);");
+            rs = sql.executeQuery("SELECT Mesa FROM Sitio WHERE IDRestaurante= '"+IDrestaurante+"'AND (Mesa) NOT IN (SELECT Mesa FROM Reservas WHERE Hora='"+ ti +"')");
             while (rs.next()){
                 String mesa = rs.getString("Mesa");
                 panel.addItem(0,mesa);
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
+            panel.error("Error al conseguir las mesas.");
         }
     }
     
@@ -155,16 +148,11 @@ public class Sql implements ActionListener{
             String mesa, String restaurante, String nombre) throws SQLException{
         query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
-        int IDRestaurante=0;
         try {
             
-            con.setAutoCommit(false);
-            
-            rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+restaurante+"'");
-
-            if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
-            else panel.error("Error al obtener el id del restaurante");
-
+//            con.setAutoCommit(false);
+            getIDRestaurante();
+            System.out.println(IDRestaurante);
             ans = con.prepareStatement(query);
             ans.setInt(1, cedula); 
             ans.setInt(2, IDRestaurante);
@@ -177,9 +165,9 @@ public class Sql implements ActionListener{
             ans.setString(2, nombre);
             ans.executeUpdate();
             
-            con.commit();
+//            con.commit();
         } catch (SQLException ex) {
-            con.rollback();
+//            con.rollback();
         }
     }
 }
