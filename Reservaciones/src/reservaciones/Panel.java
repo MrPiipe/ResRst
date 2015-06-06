@@ -2,9 +2,9 @@ package reservaciones;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import com.toedter.calendar.JDateChooser;
+import java.beans.PropertyChangeEvent;
 
 public class Panel extends JPanel {
     
@@ -46,6 +46,9 @@ public class Panel extends JPanel {
         boxHora = new JComboBox();
         
         calendario = new JDateChooser();
+        calendario.getDateEditor().addPropertyChangeListener((PropertyChangeEvent e) -> {
+            System.out.println("EEHHH!!!!");
+        });
         
         Sql database = new Sql(this);
 
@@ -62,7 +65,7 @@ public class Panel extends JPanel {
 
         btnReservar.setBounds(480,110,100,20);
 
-        lblRestaurante.setBounds(50,40,100,20);
+        lblRestaurante.setBounds(30,40,100,20);
         lblFecha.setBounds(180,40,50,20);
         lblHora.setBounds(350,40,50,20);
         lblLugar.setBounds(470,40,50,20);
@@ -72,7 +75,7 @@ public class Panel extends JPanel {
         txtNombre.setBounds(80,10,150,25);
         txtCedula.setBounds(320,10,150,25);
 
-        boxRestaurante.setBounds(50, 70, 110, 20);
+        boxRestaurante.setBounds(30, 70, 140, 20);
         calendario.setBounds(180,70,150,25);
         boxHora.setBounds(350,70,110,20);
         boxLugar.setBounds(470,70,110,20);
@@ -100,6 +103,7 @@ public class Panel extends JPanel {
     }
 
     public void calcular(long t1, long t2) {
+        boxHora.removeAllItems();
         Calendar cal = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
 
@@ -188,6 +192,8 @@ public class Panel extends JPanel {
             case 2:
                 boxHora.setEnabled(enable);
                 break;
+            case 3:
+                calendario.setEnabled(enable);
         }
     }
 

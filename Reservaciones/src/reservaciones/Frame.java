@@ -5,7 +5,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 public class Frame extends JFrame {
 
-    JPanel panel;
+    Panel panel;
 
     Frame(){
         super("Reservaciones");

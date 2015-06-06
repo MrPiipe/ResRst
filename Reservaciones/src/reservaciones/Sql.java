@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Time;
+import javax.swing.JFrame;
 
 public class Sql implements ActionListener{
     
@@ -24,6 +25,7 @@ public class Sql implements ActionListener{
     PreparedStatement ans;
     ResultSet rs;
     Panel panel;
+    JFrame FrameImagen;
     int IDRestaurante=0;
 
     Sql(Panel panel){
@@ -49,6 +51,7 @@ public class Sql implements ActionListener{
                 readTime(IDRestaurante);
                 panel.enableDisable(0,false);
                 panel.enableDisable(2,true);
+                FrameImagen = new FrameImagen(getImage(IDRestaurante));
                 break;
             case "HORA":
                 panel.cleanComboBox(0);
@@ -100,21 +103,34 @@ public class Sql implements ActionListener{
         return IDRestaurante;
     }
     
+    public String getImage(int Idrest){
+        String image="";
+        try{
+            rs = sql.executeQuery("SELECT Imagen FROM Restaurantes WHERE `IDRestaurante` = " + Idrest);
+            if(rs.next()) image = rs.getString("Imagen");
+        }catch(SQLException a){
+            panel.error("Error al obtener la imagen del restaurante");
+        }
+        return image;
+    }
+    
     public  void readTime(int IDrest){
         Time horaI = null;
         Time horaF = null;
         try{
-            rs = sql.executeQuery("SELECT `Hora Inicio` FROM Restaurantes WHERE IDRestaurante =" + "'"+ IDrest+"'");
+            rs = sql.executeQuery("SELECT `Hora Inicio` FROM Restaurantes WHERE IDRestaurante =" + IDrest);
             if(rs.next()){
                 horaI = rs.getTime("Hora Inicio");
             }
-            rs = sql.executeQuery("SELECT `Hora Fin` FROM Restaurantes WHERE IDRestaurante =" + "'"+ IDrest+"'");
+            rs = sql.executeQuery("SELECT `Hora Fin` FROM Restaurantes WHERE IDRestaurante =" + IDrest);
             if(rs.next()){
                 horaF = rs.getTime("Hora Fin");
             }
+            System.out.println(horaI);
+            System.out.println(horaF);
         }catch (SQLException ex) {
             //panel.error("error en la lectura del tiempo");
-            ex.printStackTrace();
+            panel.error("Error al obtener la hora");
         }
         panel.calcular(horaI.getTime(), horaF.getTime());
     }
@@ -134,7 +150,7 @@ public class Sql implements ActionListener{
     
     public void getMesas(int IDrestaurante, java.sql.Time ti){
         try {
-            rs = sql.executeQuery("SELECT Mesa FROM Sitio WHERE IDRestaurante= '"+IDrestaurante+"'AND (Mesa) NOT IN (SELECT Mesa FROM Reservas WHERE Hora='"+ ti +"')");
+            rs = sql.executeQuery("SELECT Mesa FROM Sitio WHERE IDRestaurante= "+IDrestaurante+"  AND (Mesa) NOT IN (SELECT Mesa FROM Reservas WHERE Hora='"+ ti +"')");
             while (rs.next()){
                 String mesa = rs.getString("Mesa");
                 panel.addItem(0,mesa);
