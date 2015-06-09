@@ -89,15 +89,17 @@ public class Sql implements ActionListener{
         }
     }
 
-    public void getMesas(int IDrestaurante, Time ti){
+    public void getMesas(int IDrestaurante, Time ti, java.sql.Date fecha){
+        System.out.println(fecha);
+        System.out.println(ti);
         try {
             rs = sql.executeQuery("SELECT Mesa "+
                                   "FROM Sitio "+
-                                  "WHERE IDRestaurante= "+IDrestaurante+
-                                  " AND (Mesa) NOT IN "+
-                                  "(SELECT Mesa "+
+                                  "WHERE IDRestaurante= "+IDrestaurante+" AND "+
+                                  "(SELECT Mesa NOT IN "+
+                                  "(SELECT MESA "+
                                   "FROM Reservas "+
-                                  "WHERE Hora='"+ ti +"')");
+                                  "WHERE Fecha = '"+fecha+"' AND Hora='"+ ti +"'))");
             while (rs.next()) panel.addItem(0,rs.getString("Mesa"));
         }catch (Exception e) {
             panel.error("Error al conseguir las mesas.");
@@ -130,7 +132,9 @@ public class Sql implements ActionListener{
                     int idrestaurante = getIDRestaurante();
                     String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
                     Time ti = Time.valueOf(horaMesa+":00");
-                    getMesas(idrestaurante, ti);
+                    String date =  panel.getDateFormat();
+                    java.sql.Date fecha = java.sql.Date.valueOf(date);
+                    getMesas(idrestaurante, ti, fecha);
                     panel.enableDisable(0,true);
                     panel.enableDisable(1,false);
 
