@@ -93,7 +93,7 @@ public class Panel extends JPanel {
         boxLugar.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
-        
+
         try{
             Sql database = new Sql(this);
             btnReservar.addActionListener(database);
@@ -118,7 +118,7 @@ public class Panel extends JPanel {
             cal.add(Calendar.HOUR_OF_DAY, 1);
         }
         while (cal.before(cal2));
-        
+
         addItem(2, getFormatCal(cal));
         cal.add(Calendar.HOUR_OF_DAY,1);
     }
