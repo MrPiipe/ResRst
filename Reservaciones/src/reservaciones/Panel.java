@@ -7,7 +7,7 @@ import com.toedter.calendar.JDateChooser;
 import java.beans.PropertyChangeEvent;
 
 public class Panel extends JPanel {
-    
+
     JButton btnReservar;
 
     JLabel lblRestaurante;
@@ -23,16 +23,16 @@ public class Panel extends JPanel {
     JComboBox boxRestaurante;
     JComboBox boxLugar;
     JComboBox boxHora;
-    
+
     JDateChooser calendario;
-    
+
     Panel(){
         setLayout(null);
-        
+
         btnReservar = new JButton("Reservar");
 
         lblRestaurante = new JLabel("Restaurante");
-        lblLugar = new JLabel("Lugar");    
+        lblLugar = new JLabel("Lugar");
         lblFecha = new JLabel("Fecha");
         lblHora = new JLabel("Hora");
         lblNombre = new JLabel("Nombre: ");
@@ -44,19 +44,12 @@ public class Panel extends JPanel {
         boxRestaurante = new JComboBox();
         boxLugar = new JComboBox();
         boxHora = new JComboBox();
-        
+
         calendario = new JDateChooser();
-        calendario.getDateEditor().addPropertyChangeListener((PropertyChangeEvent e) -> {
-            System.out.println("EEHHH!!!!");
-        });
-        
-        Sql database = new Sql(this);
 
-        btnReservar.addActionListener(database);
-
-        boxRestaurante.addActionListener(database);
-        boxLugar.addActionListener(database);
-        boxHora.addActionListener(database);
+        //calendario.getDateEditor().addPropertyChangeListener((PropertyChangeEvent e) -> {
+        //    System.out.println("EEHHH!!!!");
+        //});
 
         boxRestaurante.setActionCommand("RESTAURANTE");
         boxLugar.setActionCommand("LUGAR");
@@ -96,14 +89,24 @@ public class Panel extends JPanel {
         add(boxLugar);
         add(calendario);
         add(boxHora);
-        
+
         boxLugar.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
+        
+        try{
+            Sql database = new Sql(this);
+            btnReservar.addActionListener(database);
+            boxRestaurante.addActionListener(database);
+            boxLugar.addActionListener(database);
+            boxHora.addActionListener(database);
+        }
+        catch(Exception a){
+            error("error al conectar con la base de datos");
+        }
     }
 
     public void calcular(long t1, long t2) {
-        boxHora.removeAllItems();
         Calendar cal = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
 
@@ -115,9 +118,11 @@ public class Panel extends JPanel {
             cal.add(Calendar.HOUR_OF_DAY, 1);
         }
         while (cal.before(cal2));
-           
+        
+        addItem(2, getFormatCal(cal));
+        cal.add(Calendar.HOUR_OF_DAY,1);
     }
-  
+
    public String getFormatCal(Calendar cal) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         String formatted = format.format(cal.getTime());
@@ -135,11 +140,11 @@ public class Panel extends JPanel {
                 return boxLugar;
             case 1:
                 return boxRestaurante;
-            case 2: 
+            case 2:
                 return boxHora;
         }
         return null;
-    } 
+    }
 
     public String getText(int pos){
         switch(pos){
@@ -147,8 +152,6 @@ public class Panel extends JPanel {
                 return txtNombre.getText();
             case 1:
                 return txtCedula.getText();
-            case 2: 
-
         }
         return null;
     }

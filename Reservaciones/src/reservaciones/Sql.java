@@ -1,6 +1,8 @@
 package reservaciones;
 
 import java.awt.event.*;
+import javax.swing.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,10 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Time;
-import javax.swing.JFrame;
 
 public class Sql implements ActionListener{
-    
+
     String driver = "com.mysql.jdbc.Driver";
     String host = "jdbc:mysql://sql3.freesqldatabase.com:3306/";
     String database = "sql379612";
@@ -26,45 +27,121 @@ public class Sql implements ActionListener{
     ResultSet rs;
     Panel panel;
     JFrame FrameImagen;
-    int IDRestaurante=0;
 
-    Sql(Panel panel){
+    int sizeRest;
+    int sizeHora;
+
+    Sql(Panel panel) throws SQLException{
         try {
             this.panel = panel;
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
-            sql = con.createStatement();        
+            sql = con.createStatement();
+
             readingQuery();
         }catch( SQLException | ClassNotFoundException er ) {
-            System.err.println(er);        
+            throw new SQLException();
         }
     }
 
-    @Override
+    public void readingQuery(){
+        try{
+            rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
+            while(rs.next()) panel.addItem(1, rs.getString("Nombre Restaurante"));
+            sizeRest = panel.getComboBox(1).getItemCount();
+        } catch (SQLException ex) {
+            panel.error("Error al obtener los nombres de los restaurantes de la base de datos");
+        }
+    }
+
+    public int getIDRestaurante(){
+        int IDRestaurante = 0;
+        String rest = panel.getComboBox(1).getSelectedItem().toString();
+        try{
+            rs = sql.executeQuery("SELECT IDRestaurante "+
+                                  "FROM Restaurantes "+
+                                  "WHERE `Nombre Restaurante` = " +
+                                  "'"+rest+"'");
+            if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
+        }catch(SQLException a){
+            panel.error("Error al obtener el id del restaurante");
+        }
+        return IDRestaurante;
+    }
+
+    public  void readTime(int IDrest){
+        Time horaI = null;
+        Time horaF = null;
+        try{
+            rs = sql.executeQuery("SELECT `Hora Inicio` "+
+                                  "FROM Restaurantes "+
+                                  "WHERE IDRestaurante =" + IDrest);
+            if(rs.next()) horaI = rs.getTime("Hora Inicio");
+
+            rs = sql.executeQuery("SELECT `Hora Fin` "+
+                                  "FROM Restaurantes "+
+                                  "WHERE IDRestaurante =" + IDrest);
+            if(rs.next()) horaF = rs.getTime("Hora Fin");
+            panel.calcular(horaI.getTime(), horaF.getTime());
+            sizeHora = panel.getComboBox(2).getItemCount();
+        }catch (SQLException ex) {
+            panel.error("Error al obtener la hora");
+        }
+    }
+
+    public void getMesas(int IDrestaurante, Time ti){
+        try {
+            rs = sql.executeQuery("SELECT Mesa "+
+                                  "FROM Sitio "+
+                                  "WHERE IDRestaurante= "+IDrestaurante+
+                                  " AND (Mesa) NOT IN "+
+                                  "(SELECT Mesa "+
+                                  "FROM Reservas "+
+                                  "WHERE Hora='"+ ti +"')");
+            while (rs.next()) panel.addItem(0,rs.getString("Mesa"));
+        }catch (Exception e) {
+            panel.error("Error al conseguir las mesas.");
+        }
+    }
+
     public void actionPerformed(ActionEvent eve){
         String id = eve.getActionCommand();
+        JComboBox actual = (JComboBox) eve.getSource();
+        int size = actual.getItemCount();
+
         switch (id) {
             case "RESTAURANTE":
-                panel.cleanComboBox(2);
-                panel.cleanComboBox(0); 
-                getIDRestaurante();
-                readTime(IDRestaurante);
-                panel.enableDisable(0,false);
-                panel.enableDisable(2,true);
-                FrameImagen = new FrameImagen(getImage(IDRestaurante));
+                if( size == sizeRest){
+                    panel.cleanComboBox(2);
+                    panel.cleanComboBox(0);
+                    int idrest = getIDRestaurante();
+                    readTime(idrest);
+                    panel.enableDisable(0,false);
+                    panel.enableDisable(1,false);
+                    panel.enableDisable(2,true);
+                    //FrameImagen = new FrameImagen(getImage(idrest));
+                    sizeRest = actual.getItemCount();
+                }
+                else sizeRest = size;
                 break;
             case "HORA":
-                panel.cleanComboBox(0);
-                getIDRestaurante();
-                readTime(IDRestaurante);
-                String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
-                java.sql.Time ti = java.sql.Time.valueOf(horaMesa+":00"); 
-                getMesas(IDRestaurante, ti);
-                panel.enableDisable(0,true);
+                if( size == sizeHora){
+                    panel.cleanComboBox(0);
+                    int idrestaurante = getIDRestaurante();
+                    String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
+                    Time ti = Time.valueOf(horaMesa+":00");
+                    getMesas(idrestaurante, ti);
+                    panel.enableDisable(0,true);
+                    panel.enableDisable(1,false);
+
+                    sizeHora = actual.getItemCount();
+                }
+                else sizeHora = size;
                 break;
             case "LUGAR":
-               panel.enableDisable(1, true);
+                panel.enableDisable(1, true);
                 break;
+        /*
             case "RESERVAR":
                 String nombre = panel.getText(0);
                 String cedula = panel.getText(1);
@@ -77,7 +154,7 @@ public class Sql implements ActionListener{
                 String date =  panel.getDateFormat();
 
                 java.sql.Time t = java.sql.Time.valueOf(hora+":00");
-                
+
                 java.sql.Date fecha = java.sql.Date.valueOf(date);
 
                 try{
@@ -89,20 +166,12 @@ public class Sql implements ActionListener{
                         + " correctamente\n para el día: " + fecha
                         + "\n a la(s): " + hora);
                 break;
+        */
         }
-    } 
-    
-    public int getIDRestaurante(){
-        String rest = panel.getComboBox(1).getSelectedItem().toString();
-        try{
-            rs = sql.executeQuery("SELECT IDRestaurante FROM Restaurantes WHERE `Nombre Restaurante` = " + "'"+rest+"'");
-            if(rs.next()) IDRestaurante = rs.getInt("IDRestaurante");
-        }catch(SQLException a){
-            panel.error("Error al obtener el id del restaurante");
-        }
-        return IDRestaurante;
     }
-    
+
+
+
     public String getImage(int Idrest){
         String image="";
         try{
@@ -113,65 +182,24 @@ public class Sql implements ActionListener{
         }
         return image;
     }
-    
-    public  void readTime(int IDrest){
-        Time horaI = null;
-        Time horaF = null;
-        try{
-            rs = sql.executeQuery("SELECT `Hora Inicio` FROM Restaurantes WHERE IDRestaurante =" + IDrest);
-            if(rs.next()){
-                horaI = rs.getTime("Hora Inicio");
-            }
-            rs = sql.executeQuery("SELECT `Hora Fin` FROM Restaurantes WHERE IDRestaurante =" + IDrest);
-            if(rs.next()){
-                horaF = rs.getTime("Hora Fin");
-            }
-            System.out.println(horaI);
-            System.out.println(horaF);
-        }catch (SQLException ex) {
-            //panel.error("error en la lectura del tiempo");
-            panel.error("Error al obtener la hora");
-        }
-        panel.calcular(horaI.getTime(), horaF.getTime());
-    }
-    
-    public void readingQuery(){
-        try{
-            rs = sql.executeQuery("SELECT `Nombre Restaurante` FROM Restaurantes");
-            while (rs.next()){
-                String nombreRest = rs.getString("Nombre Restaurante");
-                panel.addItem(1,nombreRest);
-            }           
-        } catch (SQLException ex) {
-            panel.error("Por favor ingrese su nombre y cedula");
-        }
-        
-    }
-    
-    public void getMesas(int IDrestaurante, java.sql.Time ti){
-        try {
-            rs = sql.executeQuery("SELECT Mesa FROM Sitio WHERE IDRestaurante= "+IDrestaurante+"  AND (Mesa) NOT IN (SELECT Mesa FROM Reservas WHERE Hora='"+ ti +"')");
-            while (rs.next()){
-                String mesa = rs.getString("Mesa");
-                panel.addItem(0,mesa);
-            }
-        }catch (Exception e) {
-            panel.error("Error al conseguir las mesas.");
-        }
-    }
-    
-    public void executeReserva(int cedula, Time hora, java.sql.Date fecha, 
+
+
+
+
+
+
+
+    public void executeReserva(int cedula, Time hora, java.sql.Date fecha,
             String mesa, String restaurante, String nombre) throws SQLException{
         query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
         try {
-            
+
 //            con.setAutoCommit(false);
-            getIDRestaurante();
-            System.out.println(IDRestaurante);
+            int idrestaurante = getIDRestaurante();
             ans = con.prepareStatement(query);
-            ans.setInt(1, cedula); 
-            ans.setInt(2, IDRestaurante);
+            ans.setInt(1, cedula);
+            ans.setInt(2, idrestaurante);
             ans.setDate(3, fecha);
             ans.setTime(4, hora); //Cambiar a formato time
             ans.setString(5, mesa);
@@ -180,7 +208,7 @@ public class Sql implements ActionListener{
             ans.setInt(1, cedula);
             ans.setString(2, nombre);
             ans.executeUpdate();
-            
+
 //            con.commit();
         } catch (SQLException ex) {
 //            con.rollback();

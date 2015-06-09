@@ -6,16 +6,11 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-/**
- *
- * @author Familia
- */
+
 public class FrameImagen extends JFrame{
     private PanelImagen panel;
     private String img;
  
-    
-    
     FrameImagen(String img){
         super("Ubicaciones");
         try {
