@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Savepoint;
 import java.sql.Time;
 
 public class Sql implements ActionListener{
@@ -39,7 +40,7 @@ public class Sql implements ActionListener{
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
             sql = con.createStatement();
-
+            panel.addItem(1,"Seleccionar");
             readingQuery();
         }catch( SQLException | ClassNotFoundException er ) {
             throw new SQLException();
@@ -108,34 +109,37 @@ public class Sql implements ActionListener{
 
     public void actionPerformed(ActionEvent eve){
         String id = eve.getActionCommand();
-
+        String rest = panel.getComboBox(1).getSelectedItem().toString();
         switch (id) {
             case "RESTAURANTE":
                 JComboBox actual = (JComboBox) eve.getSource();
                 size = actual.getItemCount();
-                if( size == sizeRest){
+                if( size == sizeRest && !rest.equals("Seleccionar")){
                     panel.cleanComboBox(2);
                     panel.cleanComboBox(0);
                     int idrest = getIDRestaurante();
+                    panel.addItem(2,"Seleccionar");
                     readTime(idrest);
                     panel.enableDisable(0,false);
                     panel.enableDisable(1,false);
                     panel.enableDisable(2,true);
                     panel.frame.panelImagen.getImg(getImage(idrest));
                     dimension = panel.frame.panelImagen.getImgSize();
-                    if(dimension[0] > 600)
-                        panel.frame.setSize(dimension[0],210+dimension[1]);
-                    else
-                        panel.frame.setSize(600,210+dimension[1]);
+                    if(dimension[0] > 600) panel.frame.setSize(dimension[0],210+dimension[1]);
+                    else panel.frame.setSize(600,210+dimension[1]);
                     panel.frame.panelImagen.setImage();
                     sizeRest = actual.getItemCount();
+                } else sizeRest = size;
+                if(rest.equals("Seleccionar")){
+                    panel.enableDisable(0,false);
+                    panel.enableDisable(2,false);
                 }
-                else sizeRest = size;
                 break;
             case "HORA":
+                String time = panel.getComboBox(2).getSelectedItem().toString();
                 actual = (JComboBox) eve.getSource();
                 size = actual.getItemCount();
-                if( size == sizeHora){
+                if( size == sizeHora && !time.equals("Seleccionar")){
                     panel.cleanComboBox(0);
                     int idrestaurante = getIDRestaurante();
                     String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
@@ -143,6 +147,7 @@ public class Sql implements ActionListener{
                     try{
                         String date =  panel.getDateFormat();
                         java.sql.Date fecha = java.sql.Date.valueOf(date);
+                        panel.addItem(0,"Seleccionar");
                         getMesas(idrestaurante, ti, fecha);
                         panel.enableDisable(0,true);
                         panel.enableDisable(1,false);
@@ -152,11 +157,19 @@ public class Sql implements ActionListener{
                     catch(Exception s){
                         panel.error("Por favor seleccione una fecha");
                     }
+                }else sizeHora = size;
+                if(time.equals("Seleccionar")){
+                    panel.enableDisable(0,false);
+                    panel.enableDisable(1,false);
                 }
-                else sizeHora = size;
                 break;
             case "LUGAR":
-                panel.enableDisable(1, true);
+                String mesa = panel.getComboBox(0).getSelectedItem().toString();
+                if(mesa.equals("Seleccionar") ){
+                    panel.enableDisable(1, false);
+                }else{
+                    panel.enableDisable(1, true);
+                }
                 break;
             case "RESERVAR":
                 String nombre = panel.getText(0);
@@ -202,6 +215,7 @@ public class Sql implements ActionListener{
         PreparedStatement cliente = null;
         int idrestaurante = getIDRestaurante();
         try {
+            Savepoint save = con.setSavepoint();
             con.setAutoCommit(false);
 
             reserva = con.prepareStatement(query);
