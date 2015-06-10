@@ -226,6 +226,8 @@ public class Sql implements ActionListener{
         } catch (SQLException ex) {
             if (con != null){
                 try{
+                    panel.cleanComboBox(0);
+                    getMesas(idrestaurante, hora, fecha);
                     con.rollback();
                     panel.error("Error al hacer la transaccion, por favor "+
                                 "verifique los datos e intentelo nuevamente");
