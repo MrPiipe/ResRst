@@ -23,7 +23,7 @@ public class Frame extends JFrame {
                     log(java.util.logging.Level.SEVERE, null, e);
         }
 
-        setSize(600,200);
+        setSize(600,170);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         setLayout(null);
@@ -31,8 +31,8 @@ public class Frame extends JFrame {
         panel = new Panel(this);
         panelImagen = new PanelImagen();
 
-        panel.setBounds(0,0,600,200);
-        panelImagen.setBounds(0,200,600,300);
+        panel.setBounds(0,0,600,170);
+        panelImagen.setBounds(0,170,600,300);
 
         add(panel);
         add(panelImagen);
