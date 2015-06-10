@@ -124,9 +124,9 @@ public class Sql implements ActionListener{
                     panel.frame.panelImagen.getImg(getImage(idrest));
                     dimension = panel.frame.panelImagen.getImgSize();
                     if(dimension[0] > 600)
-                        panel.frame.setSize(dimension[0],200+dimension[1]);
+                        panel.frame.setSize(dimension[0],210+dimension[1]);
                     else
-                        panel.frame.setSize(600,200+dimension[1]);
+                        panel.frame.setSize(600,210+dimension[1]);
                     panel.frame.panelImagen.setImage();
                     sizeRest = actual.getItemCount();
                 }

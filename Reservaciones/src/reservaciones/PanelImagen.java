@@ -6,6 +6,7 @@ public class PanelImagen extends JPanel{
 
     ImageIcon img;
     JLabel lblImg;
+    boolean prim = true;
 
     PanelImagen(){
         setLayout(null);
@@ -23,13 +24,13 @@ public class PanelImagen extends JPanel{
     }
 
     public void setImage(){
+        if (!prim) remove(lblImg);
+        prim=false;
         int[] dimension = getImgSize();
         lblImg = new JLabel(img);
         lblImg.setBounds(10,0,dimension[0],dimension[1]);
         add(lblImg);
-        if(dimension[0] > 600)
-            setBounds(0,170,dimension[0],dimension[1]);
-        else
-            setBounds(0,170,600,dimension[1]);
+        if(dimension[0] > 600) setBounds(0,170,dimension[0],dimension[1]+20);
+        else setBounds(0,170,600,dimension[1]);
     }
 }
