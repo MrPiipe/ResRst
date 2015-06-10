@@ -27,9 +27,9 @@ public class Panel extends JPanel {
 
     JDateChooser calendario;
 
-    JFrame frame;
+    Frame frame;
 
-    Panel(JFrame frame){
+    Panel(Frame frame){
 
         this.frame = frame;
 

@@ -132,7 +132,7 @@ public class Sql implements ActionListener{
                     panel.enableDisable(0,false);
                     panel.enableDisable(1,false);
                     panel.enableDisable(2,true);
-                    FrameImagen = new FrameImagen(getImage(idrest));
+                    panel.frame.panelImagen.setImage(getImage(idrest));
                     sizeRest = actual.getItemCount();
                 }
                 else sizeRest = size;

@@ -6,6 +6,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 public class Frame extends JFrame {
 
     Panel panel;
+    PanelImagen panelImagen;
 
     Frame(){
         super("Reservaciones");
@@ -25,9 +26,16 @@ public class Frame extends JFrame {
         setSize(600,200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        setLayout(null);
+
         panel = new Panel(this);
+        panelImagen = new PanelImagen();
+
+        panel.setBounds(0,0,600,200);
+        panelImagen.setBounds(0,200,600,300);
 
         add(panel);
+        add(panelImagen);
 
         setVisible(true);
     }
