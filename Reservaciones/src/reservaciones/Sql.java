@@ -166,20 +166,11 @@ public class Sql implements ActionListener{
 
                 java.sql.Date fecha = java.sql.Date.valueOf(date);
 
-                System.out.println("Cedula: "+ced);
-                System.out.println("Hora: "+t);
-                System.out.println("Fecha: "+fecha);
-                System.out.println("Lugar: "+lugar);
-                System.out.println("Restaurante: "+restaurante);
-                System.out.println("Nombre: "+nombre);
                 try{
                     executeReserva(ced, t, fecha, lugar, restaurante, nombre);
                 } catch(SQLException a){
                     panel.error("Error al realizar la reserva");
                 }
-                panel.msg(nombre + ", su reserva se ha realizado"
-                        + " correctamente\npara el día: " + fecha
-                        + "\na la(s): " + hora);
                 break;
         }
     }
@@ -199,34 +190,41 @@ public class Sql implements ActionListener{
             String mesa, String restaurante, String nombre) throws SQLException {
         query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
+
         PreparedStatement reserva = null;
         PreparedStatement cliente = null;
         int idrestaurante = getIDRestaurante();
         try {
-
             con.setAutoCommit(false);
+
             reserva = con.prepareStatement(query);
+            cliente = con.prepareStatement(querycliente);
+
             reserva.setInt(1, cedula);
             reserva.setInt(2, idrestaurante);
             reserva.setDate(3, fecha);
-            reserva.setTime(4, hora); 
+            reserva.setTime(4, hora);
             reserva.setString(5, mesa);
-            //reserva.executeUpdate();
+            reserva.executeUpdate();
 
-            cliente = con.prepareStatement(querycliente);
             cliente.setInt(1, cedula);
             cliente.setString(2, nombre);
-            //cliente.executeUpdate();
-            
+            cliente.executeUpdate();
+
             con.commit();
+
+            panel.msg(nombre + ", su reserva se ha realizado"
+                + " correctamente\npara el día: " + fecha
+                + "\na la(s): " + hora);
         } catch (SQLException ex) {
             if (con != null){
                 try{
-                    panel.error("Transaction is being rolled back");
                     con.rollback();
+                    panel.error("Error al hacer la transaccion, por favor "+
+                                "verifique los datos e intentelo nuevamente");
                 }
                 catch(SQLException e){
-                    System.out.println("Error");
+                    panel.error("error al hacer roll back");
                 }
             }
         } finally {
