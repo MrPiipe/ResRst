@@ -172,10 +172,14 @@ public class Sql implements ActionListener{
                 System.out.println("Lugar: "+lugar);
                 System.out.println("Restaurante: "+restaurante);
                 System.out.println("Nombre: "+nombre);
-                executeReserva(ced, t, fecha, lugar, restaurante, nombre);
+                try{
+                    executeReserva(ced, t, fecha, lugar, restaurante, nombre);
+                } catch(SQLException a){
+                    panel.error("Error al realizar la reserva");
+                }
                 panel.msg(nombre + ", su reserva se ha realizado"
-                        + " correctamente\n para el día: " + fecha
-                        + "\n a la(s): " + hora);
+                        + " correctamente\npara el día: " + fecha
+                        + "\na la(s): " + hora);
                 break;
         }
     }
@@ -192,34 +196,47 @@ public class Sql implements ActionListener{
     }
 
     public void executeReserva(int cedula, Time hora, java.sql.Date fecha,
-            String mesa, String restaurante, String nombre) {
+            String mesa, String restaurante, String nombre) throws SQLException {
         query="INSERT INTO `Reservas`(`Cedula`, `IDRestaurante`, `Fecha`, `Hora`, `Mesa`) VALUES (?,?,?,?,?)";
         querycliente="INSERT INTO `Cliente` (Cedula, Nombre) VALUES (?,?)";
+        PreparedStatement reserva = null;
+        PreparedStatement cliente = null;
+        int idrestaurante = getIDRestaurante();
         try {
 
             con.setAutoCommit(false);
-            int idrestaurante = getIDRestaurante();
-            ans = con.prepareStatement(query);
-            ans.setInt(1, cedula);
-            ans.setInt(2, idrestaurante);
-            ans.setDate(3, fecha);
-            ans.setTime(4, hora); 
-            ans.setString(5, mesa);
-            ans.executeUpdate();
+            reserva = con.prepareStatement(query);
+            reserva.setInt(1, cedula);
+            reserva.setInt(2, idrestaurante);
+            reserva.setDate(3, fecha);
+            reserva.setTime(4, hora); 
+            reserva.setString(5, mesa);
+            //reserva.executeUpdate();
 
-            ans = con.prepareStatement(querycliente);
-            ans.setInt(1, cedula);
-            ans.setString(2, nombre);
-            ans.executeUpdate();
-
+            cliente = con.prepareStatement(querycliente);
+            cliente.setInt(1, cedula);
+            cliente.setString(2, nombre);
+            //cliente.executeUpdate();
+            
             con.commit();
         } catch (SQLException ex) {
-            try{
-                con.rollback();
+            if (con != null){
+                try{
+                    panel.error("Transaction is being rolled back");
+                    con.rollback();
+                }
+                catch(SQLException e){
+                    System.out.println("Error");
+                }
             }
-            catch(SQLException e){
-                System.out.println("Error");
+        } finally {
+            if (reserva != null){
+                reserva.close();
             }
+            if(cliente != null){
+                cliente.close();
+            }
+            con.setAutoCommit(true);
         }
     }
 }
