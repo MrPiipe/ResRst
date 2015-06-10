@@ -31,9 +31,11 @@ public class Sql implements ActionListener{
     int size;
     int sizeRest;
     int sizeHora;
+    boolean shown;
 
     Sql(Panel panel) throws SQLException{
         try {
+            shown = false;
             this.panel = panel;
             Class.forName(driver);
             con = DriverManager.getConnection(host+database, user, pass);
@@ -109,6 +111,16 @@ public class Sql implements ActionListener{
         String id = eve.getActionCommand();
 
         switch (id) {
+            case "SHOW":
+                if(!shown){
+                    panel.frame.setSize(600,400);
+                    shown = true;
+                }
+                else{
+                    panel.frame.setSize(600,200);
+                    shown = false;
+                }
+                break;
             case "RESTAURANTE":
                 JComboBox actual = (JComboBox) eve.getSource();
                 size = actual.getItemCount();
@@ -120,7 +132,7 @@ public class Sql implements ActionListener{
                     panel.enableDisable(0,false);
                     panel.enableDisable(1,false);
                     panel.enableDisable(2,true);
-                    //FrameImagen = new FrameImagen(getImage(idrest));
+                    FrameImagen = new FrameImagen(getImage(idrest));
                     sizeRest = actual.getItemCount();
                 }
                 else sizeRest = size;

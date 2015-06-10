@@ -9,6 +9,7 @@ import java.beans.PropertyChangeEvent;
 public class Panel extends JPanel {
 
     JButton btnReservar;
+    JButton btnShow;
 
     JLabel lblRestaurante;
     JLabel lblLugar;
@@ -26,10 +27,16 @@ public class Panel extends JPanel {
 
     JDateChooser calendario;
 
-    Panel(){
+    JFrame frame;
+
+    Panel(JFrame frame){
+
+        this.frame = frame;
+
         setLayout(null);
 
         btnReservar = new JButton("Reservar");
+        btnShow = new JButton("Mapa del restaurante");
 
         lblRestaurante = new JLabel("Restaurante");
         lblLugar = new JLabel("Lugar");
@@ -47,16 +54,14 @@ public class Panel extends JPanel {
 
         calendario = new JDateChooser();
 
-        //calendario.getDateEditor().addPropertyChangeListener((PropertyChangeEvent e) -> {
-        //    System.out.println("EEHHH!!!!");
-        //});
-
         boxRestaurante.setActionCommand("RESTAURANTE");
         boxLugar.setActionCommand("LUGAR");
         boxHora.setActionCommand("HORA");
         btnReservar.setActionCommand("RESERVAR");
+        btnShow.setActionCommand("SHOW");
 
         btnReservar.setBounds(480,110,100,20);
+        btnShow.setBounds(30,110,170,20);
 
         lblRestaurante.setBounds(30,40,100,20);
         lblFecha.setBounds(180,40,50,20);
@@ -74,6 +79,7 @@ public class Panel extends JPanel {
         boxLugar.setBounds(470,70,110,20);
 
         add(btnReservar);
+        add(btnShow);
 
         add(lblRestaurante);
         add(lblLugar);
@@ -100,6 +106,7 @@ public class Panel extends JPanel {
             boxRestaurante.addActionListener(database);
             boxLugar.addActionListener(database);
             boxHora.addActionListener(database);
+            btnShow.addActionListener(database);
         }
         catch(Exception a){
             error("error al conectar con la base de datos");

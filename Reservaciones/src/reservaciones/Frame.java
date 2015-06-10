@@ -16,16 +16,16 @@ public class Frame extends JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | 
+        } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | UnsupportedLookAndFeelException e) {
             java.util.logging.Logger.getLogger(Frame.class.getName()).
                     log(java.util.logging.Level.SEVERE, null, e);
         }
-        
+
         setSize(600,200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        panel = new Panel();
+        panel = new Panel(this);
 
         add(panel);
 
