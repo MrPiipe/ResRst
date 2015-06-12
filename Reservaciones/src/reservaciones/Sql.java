@@ -59,7 +59,7 @@ public class Sql implements ActionListener{
     public int getIDRestaurante(){
         int IDRestaurante = 0;
         String rest = panel.getComboBox(1).getSelectedItem().toString();
-        if(rest.equals("------")){
+        if(rest.equals("")){
             panel.error("Por favor seleccione un restaurante");
             panel.enableDisable(0,false);
             panel.enableDisable(1,false);
@@ -150,7 +150,7 @@ public class Sql implements ActionListener{
                 size = actual.getItemCount();
                 if( size == sizeHora){
                     String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
-                    if(horaMesa.equals("------")){
+                    if(horaMesa.equals("")){
                         panel.error("Por favor seleccione una hora");
                         panel.enableDisable(0,false);
                         panel.enableDisable(1,false);
@@ -175,7 +175,7 @@ public class Sql implements ActionListener{
                 size = actual.getItemCount();
                 if( size == sizeHora){
                     String l = panel.getComboBox(0).getSelectedItem().toString();
-                    if(l.equals("------")){
+                    if(l.equals("")){
                         panel.error("Por favor seleccione una mesa");
                         panel.enableDisable(1, false);
                         return;
@@ -191,7 +191,7 @@ public class Sql implements ActionListener{
                 try{
                     nombre = panel.getText(0);
                     cedula = panel.getText(1);
-                    if(!nombre.matches("([a-z]|[A-Z])+")) throw new Exception();
+                    if(!nombre.matches("([a-z]|[A-Z]| )+")) throw new Exception();
                     if(!cedula.matches("([0-9])+")) throw new Exception();
                 }catch(Exception a){
                     panel.error("Por favor introdusca nombre y cedula validos");

@@ -96,7 +96,7 @@ public class Panel extends JPanel {
         btnReservar.setEnabled(false);
         calendario.setEnabled(false);
 
-        boxRestaurante.addItem("------");
+        boxRestaurante.addItem("");
 
         try{
             final Sql database = new Sql(this);
@@ -195,14 +195,14 @@ public class Panel extends JPanel {
         switch(pos){
             case 0:
                 boxLugar.removeAllItems();
-                boxLugar.addItem("------");
+                boxLugar.addItem("");
                 break;
             case 1:
                 boxRestaurante.removeAllItems();
                 break;
             case 2:
                 boxHora.removeAllItems();
-                boxHora.addItem("------");
+                boxHora.addItem("");
                 break;
         }
     }
