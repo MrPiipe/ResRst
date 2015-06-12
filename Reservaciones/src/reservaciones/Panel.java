@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.toedter.calendar.JDateChooser;
-import java.beans.PropertyChangeEvent;
+import java.beans.*;
 
 public class Panel extends JPanel {
 
@@ -59,15 +59,15 @@ public class Panel extends JPanel {
 
         btnReservar.setBounds(480,110,100,20);
 
-        lblRestaurante.setBounds(35,50,100,20);
-        lblFecha.setBounds(185,50,50,20);
-        lblHora.setBounds(355,50,50,20);
-        lblLugar.setBounds(475,50,50,20);
-        lblNombre.setBounds(50,10,70,20);
-        lblCedula.setBounds(315,10,70,20);
+        lblRestaurante.setBounds(30,40,100,20);
+        lblFecha.setBounds(180,40,50,20);
+        lblHora.setBounds(350,40,50,20);
+        lblLugar.setBounds(470,40,50,20);
+        lblNombre.setBounds(10,10,70,20);
+        lblCedula.setBounds(260,10,70,20);
 
-        txtNombre.setBounds(100,10,150,25);
-        txtCedula.setBounds(360,10,150,25);
+        txtNombre.setBounds(80,10,150,25);
+        txtCedula.setBounds(320,10,150,25);
 
         boxRestaurante.setBounds(30, 70, 140, 20);
         calendario.setBounds(180,70,150,25);
@@ -94,9 +94,26 @@ public class Panel extends JPanel {
         boxLugar.setEnabled(false);
         boxHora.setEnabled(false);
         btnReservar.setEnabled(false);
+        calendario.setEnabled(false);
 
         try{
-            Sql database = new Sql(this);
+            final Sql database = new Sql(this);
+
+            calendario.getDateEditor().addPropertyChangeListener(
+                new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent e) {
+                    if ("date".equals(e.getPropertyName())) {
+                        cleanComboBox(2);
+                        int idrest = database.getIDRestaurante();
+                        database.readTime(idrest);
+                        enableDisable(0,false);
+                        enableDisable(1,false);
+                        enableDisable(2,true);
+                    }
+                }
+            });
+
             btnReservar.addActionListener(database);
             boxRestaurante.addActionListener(database);
             boxLugar.addActionListener(database);

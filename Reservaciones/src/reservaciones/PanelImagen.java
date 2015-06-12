@@ -6,10 +6,11 @@ public class PanelImagen extends JPanel{
 
     ImageIcon img;
     JLabel lblImg;
-    boolean prim = true;
+    boolean prim;
 
     PanelImagen(){
         setLayout(null);
+        prim = true;
     }
 
     public void getImg(String nombre){
@@ -25,7 +26,7 @@ public class PanelImagen extends JPanel{
 
     public void setImage(){
         if (!prim) remove(lblImg);
-        prim=false;
+        else prim=false;
         int[] dimension = getImgSize();
         lblImg = new JLabel(img);
         lblImg.setBounds(10,0,dimension[0],dimension[1]);
