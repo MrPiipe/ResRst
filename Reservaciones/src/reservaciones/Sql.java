@@ -31,6 +31,7 @@ public class Sql implements ActionListener{
     int size;
     int sizeRest;
     int sizeHora;
+    int sizeLugar;
     int[] dimension;
 
     Sql(Panel panel) throws SQLException{
@@ -109,6 +110,7 @@ public class Sql implements ActionListener{
                                   "FROM Reservas "+
                                   "WHERE Fecha = '"+fecha+"' AND Hora='"+ ti +"'))");
             while (rs.next()) panel.addItem(0,rs.getString("Mesa"));
+            sizeLugar = panel.getComboBox(0).getItemCount();
         }catch (Exception e) {
             panel.error("Error al conseguir las mesas.");
         }
@@ -173,7 +175,7 @@ public class Sql implements ActionListener{
             case "LUGAR":
                 actual = (JComboBox) eve.getSource();
                 size = actual.getItemCount();
-                if( size == sizeHora){
+                if( size == sizeLugar ){
                     String l = panel.getComboBox(0).getSelectedItem().toString();
                     if(l.equals("")){
                         panel.error("Por favor seleccione una mesa");
@@ -181,9 +183,10 @@ public class Sql implements ActionListener{
                         return;
                     }
                     panel.enableDisable(1, true);
-                    sizeHora = actual.getItemCount();
+
+                    sizeLugar = actual.getItemCount();
                 }
-                else sizeHora = size;
+                else sizeLugar = size;
                 break;
             case "RESERVAR":
                 String nombre;
