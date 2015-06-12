@@ -59,6 +59,14 @@ public class Sql implements ActionListener{
     public int getIDRestaurante(){
         int IDRestaurante = 0;
         String rest = panel.getComboBox(1).getSelectedItem().toString();
+        if(rest.equals("------")){
+            panel.error("Por favor seleccione un restaurante");
+            panel.enableDisable(0,false);
+            panel.enableDisable(1,false);
+            panel.enableDisable(2,false);
+            panel.enableDisable(3,false);
+            return -1;
+        }
         try{
             rs = sql.executeQuery("SELECT IDRestaurante "+
                                   "FROM Restaurantes "+
@@ -115,6 +123,13 @@ public class Sql implements ActionListener{
                 size = actual.getItemCount();
                 if( size == sizeRest){
                     int idrest = getIDRestaurante();
+                    if(idrest == -1){
+                        panel.enableDisable(0,false);
+                        panel.enableDisable(1,false);
+                        panel.enableDisable(2,false);
+                        panel.enableDisable(3,false);
+                        return;
+                    }
                     panel.enableDisable(0,false);
                     panel.enableDisable(1,false);
                     panel.enableDisable(2,false);
@@ -134,9 +149,16 @@ public class Sql implements ActionListener{
                 actual = (JComboBox) eve.getSource();
                 size = actual.getItemCount();
                 if( size == sizeHora){
+                    String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
+                    if(horaMesa.equals("------")){
+                        panel.error("Por favor seleccione una hora");
+                        panel.enableDisable(0,false);
+                        panel.enableDisable(1,false);
+                        return;
+                    }
                     panel.cleanComboBox(0);
                     int idrestaurante = getIDRestaurante();
-                    String horaMesa = panel.getComboBox(2).getSelectedItem().toString();
+                    if(idrestaurante == -1) return;
                     Time ti = Time.valueOf(horaMesa+":00");
                     String date =  panel.getDateFormat();
                     java.sql.Date fecha = java.sql.Date.valueOf(date);
@@ -149,7 +171,19 @@ public class Sql implements ActionListener{
                 else sizeHora = size;
                 break;
             case "LUGAR":
-                panel.enableDisable(1, true);
+                actual = (JComboBox) eve.getSource();
+                size = actual.getItemCount();
+                if( size == sizeHora){
+                    String l = panel.getComboBox(0).getSelectedItem().toString();
+                    if(l.equals("------")){
+                        panel.error("Por favor seleccione una mesa");
+                        panel.enableDisable(1, false);
+                        return;
+                    }
+                    panel.enableDisable(1, true);
+                    sizeHora = actual.getItemCount();
+                }
+                else sizeHora = size;
                 break;
             case "RESERVAR":
                 String nombre;

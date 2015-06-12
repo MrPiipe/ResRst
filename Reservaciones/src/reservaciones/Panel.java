@@ -96,6 +96,8 @@ public class Panel extends JPanel {
         btnReservar.setEnabled(false);
         calendario.setEnabled(false);
 
+        boxRestaurante.addItem("------");
+
         try{
             final Sql database = new Sql(this);
 
@@ -106,6 +108,7 @@ public class Panel extends JPanel {
                     if ("date".equals(e.getPropertyName())) {
                         cleanComboBox(2);
                         int idrest = database.getIDRestaurante();
+                        if(idrest == -1 ) return; 
                         database.readTime(idrest);
                         enableDisable(0,false);
                         enableDisable(1,false);
@@ -192,12 +195,14 @@ public class Panel extends JPanel {
         switch(pos){
             case 0:
                 boxLugar.removeAllItems();
+                boxLugar.addItem("------");
                 break;
             case 1:
                 boxRestaurante.removeAllItems();
                 break;
             case 2:
                 boxHora.removeAllItems();
+                boxHora.addItem("------");
                 break;
         }
     }
